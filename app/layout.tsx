@@ -29,10 +29,30 @@ const mono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Tentworks — Joe, on Maui, since 1989",
+  title: "Tentworks — Maui Event Infrastructure",
   description:
-    "Hand-built tents for Maui weddings, gatherings, and once-in-a-lifetime moments. Tell Joe what you're holding and he'll build the room for it.",
+    "Tent rentals, staging, generators, and event infrastructure for Maui weddings, private gatherings, and large-scale events.",
   generator: "v13",
+  openGraph: {
+    title: "Tentworks — Maui Event Infrastructure",
+    description:
+      "Tent rentals, staging, generators, and event infrastructure for Maui weddings, private gatherings, and large-scale events.",
+    images: [
+      {
+        url: "/og/tentworks-og.png",
+        width: 1200,
+        height: 630,
+        alt: "Tentworks — Maui Event Infrastructure",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tentworks — Maui Event Infrastructure",
+    description:
+      "Tent rentals, staging, generators, and event infrastructure for Maui weddings, private gatherings, and large-scale events.",
+    images: ["/og/tentworks-og.png"],
+  },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
