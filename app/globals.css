@@ -1,0 +1,329 @@
+@import "tailwindcss";
+
+/* ----------------------------------------------------------------------
+ * v11 — v0's identity, refined.
+ * Architectural / blueprint vocabulary: sharp corners, mono labels,
+ * Geist display, dimension annotations, crop marks on photos,
+ * arch-grid backgrounds. Plus: real Joe photography, ocean shader hero,
+ * scroll-cinema, and the things v0 was missing.
+ * ------------------------------------------------------------------- */
+
+@theme inline {
+  --font-display: var(--font-display-actual), ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    var(--font-body-actual), ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    var(--font-mono-actual), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --color-shell:  var(--shell);
+  --color-sand:   var(--sand);
+  --color-paper:  var(--paper);
+  --color-ink:    var(--ink);
+  --color-coral:  var(--coral);
+  --color-sun:    var(--sun);
+  --color-ocean:  var(--ocean);
+  --color-deep:   var(--deep);
+  --color-cream:  var(--cream);
+}
+
+:root {
+  /* v0's palette — sun-bleached canvas, ocean depths, sunset glow */
+  --shell:    #f7f3ec;
+  --sand:     #ece2cd;
+  --paper:    #ede4cf;
+  --cream:    #fbf7ee;
+  --ink:      #161d24;
+  --ink-soft: #5a6470;
+  --deep:     #1a3a47;
+  --ocean:    #2f6b78;
+  --coral:    #d85a3c;
+  --sun:      #ea9a45;
+  --line:     #d9cdb4;
+  --ink-line: #c7bda6;
+
+  /* Sharp by default — v0's signature.
+     Buttons get a soft 2px so they still read as tappable. */
+  --radius:    0px;
+  --radius-btn: 2px;
+}
+
+@layer base {
+  html, body {
+    background: var(--shell);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Stop trackpad/edge horizontal swipes from triggering browser
+       back/forward navigation. Vertical scroll is unaffected. */
+    overscroll-behavior-x: none;
+    /* Guard against accidental horizontal scroll arming the swipe gesture,
+       while leaving normal vertical scrolling intact. */
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    letter-spacing: -0.035em;
+    font-weight: 500;
+  }
+  ::selection { background: var(--coral); color: var(--shell); }
+}
+
+/* ----------------------------------------------------------------------
+ * Typography utilities — v0's vocabulary, restored.
+ * ------------------------------------------------------------------- */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+.font-display-light {
+  font-family: var(--font-display);
+  letter-spacing: -0.04em;
+  font-weight: 300;
+}
+.tight {
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+}
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.eyebrow {
+  font-family: var(--font-display);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+.hairline { border-color: var(--line); }
+
+/* ----------------------------------------------------------------------
+ * Surfaces — sharp engineering surfaces dominant.
+ * Photos get crop marks, not radii. Buttons stay slightly soft (2px).
+ * ------------------------------------------------------------------- */
+.blueprint-card {
+  background: var(--cream);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  position: relative;
+}
+.blueprint-card::before,
+.blueprint-card::after {
+  content: "";
+  position: absolute;
+  width: 14px; height: 14px;
+  border-color: var(--coral);
+  border-style: solid;
+  border-width: 0;
+}
+.blueprint-card::before {
+  top: -1px; left: -1px;
+  border-top-width: 2px; border-left-width: 2px;
+}
+.blueprint-card::after {
+  bottom: -1px; right: -1px;
+  border-bottom-width: 2px; border-right-width: 2px;
+}
+.frame-card {
+  background: var(--shell);
+  border: 1px solid var(--line);
+  border-radius: 0;
+}
+.photo-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+  background: var(--ink);
+}
+
+/* Crop marks — the v0 photo treatment */
+.crop-marks::before,
+.crop-marks::after,
+.crop-marks > .cm-tl,
+.crop-marks > .cm-tr,
+.crop-marks > .cm-bl,
+.crop-marks > .cm-br {
+  content: "";
+  position: absolute;
+  width: 12px; height: 12px;
+  border-color: rgba(247, 243, 236, 0.7);
+  border-style: solid;
+  border-width: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.crop-marks::before { top: 12px; left: 12px; border-top-width: 1px; border-left-width: 1px; }
+.crop-marks::after  { bottom: 12px; right: 12px; border-bottom-width: 1px; border-right-width: 1px; }
+.crop-marks-dark::before { border-color: rgba(22,29,36,0.7); }
+.crop-marks-dark::after  { border-color: rgba(22,29,36,0.7); }
+
+/* Buttons — pill is gone; v0 is straight rectangles with 2px softness */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.6em;
+  padding: 0.85em 1.6em;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: var(--radius-btn);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  white-space: nowrap;
+}
+.btn-coral {
+  background: var(--coral);
+  color: var(--shell);
+}
+.btn-coral:hover { background: var(--ink); }
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+.btn-ghost:hover { background: var(--ink); color: var(--shell); }
+
+.link-coral {
+  color: var(--ink);
+  background-image: linear-gradient(var(--coral), var(--coral));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  transition: background-size 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.3s;
+  padding-bottom: 2px;
+}
+.link-coral:hover { background-size: 100% 100%; color: var(--shell); }
+
+/* ----------------------------------------------------------------------
+ * Atmosphere
+ * ------------------------------------------------------------------- */
+.paper-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(234, 154, 69, 0.06), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(47, 107, 120, 0.04), transparent 60%),
+    var(--shell);
+}
+.grain { position: relative; }
+.grain::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* Architectural grid — v0's signature texture */
+.arch-grid {
+  background-image:
+    linear-gradient(to right, rgba(22, 29, 36, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(22, 29, 36, 0.05) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+.arch-grid-light {
+  background-image:
+    linear-gradient(to right, rgba(247, 243, 236, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(247, 243, 236, 0.05) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* Reveal on scroll */
+.fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s cubic-bezier(0.2, 0.7, 0.2, 1), transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.fade-up.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Construction CTA heartbeat */
+@keyframes pulse-soft {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(216, 90, 60, 0.5); }
+  50%      { box-shadow: 0 0 0 18px rgba(216, 90, 60, 0); }
+}
+.pulse-soft { animation: pulse-soft 2.8s ease-in-out infinite; }
+
+/* ----------------------------------------------------------------------
+ * v13 — ported from v0: build-sequence CTA pulse + build-wizard helpers.
+ * ------------------------------------------------------------------- */
+@keyframes buildPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(216, 90, 60, 0.55); }
+  50%      { box-shadow: 0 0 0 16px rgba(216, 90, 60, 0); }
+}
+:root { --bg-alt: var(--cream); }
+.link-underline {
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+}
+
+/* ----------------------------------------------------------------------
+ * Legacy class aliases — components were written against the old v11
+ * vocabulary (.display, .display-italic, .body, .label). Map them to
+ * the v0-identity equivalents so we don't need to touch every site.
+ * ------------------------------------------------------------------- */
+.display {
+  font-family: var(--font-display);
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  line-height: 0.96;
+}
+.display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  letter-spacing: -0.04em;
+  font-weight: 300;
+}
+.body {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+.label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.soft-card, .soft-photo {
+  /* legacy round surfaces — flatten to v0's frame card so the page reads sharp */
+  border-radius: 0;
+}
+.soft-card {
+  background: var(--cream);
+  border: 1px solid var(--line);
+}
+.soft-photo {
+  overflow: hidden;
+  background: var(--ink);
+  position: relative;
+}
+.btn-soft {
+  /* legacy pill alias — collapsed to 2px so old buttons read sharp */
+  border-radius: var(--radius-btn);
+}
+
+/* Dimension line annotation */
+.dim-line {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--ink-soft);
+}
+.dim-line::before,
+.dim-line::after {
+  content: ""; flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.35;
+}
+.dim-line .tick {
+  display: inline-block;
+  width: 1px; height: 10px;
+  background: currentColor;
+  opacity: 0.5;
+}
