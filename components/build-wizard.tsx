@@ -321,7 +321,7 @@ export function BuildWizard({
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-start">
       {/* LEFT RAIL — hero, progress, building tent. Sticky on desktop. */}
       <aside className="lg:col-span-5 lg:sticky lg:top-28">
         <p className="eyebrow" style={{ color: "var(--coral)" }}>
@@ -359,8 +359,9 @@ export function BuildWizard({
           </div>
         </div>
 
-        {/* Tent builds with the question progress */}
-        <div className="mt-8">
+        {/* Tent builds with the question progress — desktop only; on mobile it
+            would push the first question below the fold, so it's hidden there. */}
+        <div className="mt-8 hidden lg:block">
           <TentBuild step={step} reduced={reduced} />
           <p className="mono-label mt-3" style={{ color: "var(--ink-soft)" }}>
             {STAGE_NAMES[Math.min(step, STAGE_NAMES.length - 1)]}

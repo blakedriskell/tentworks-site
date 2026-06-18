@@ -176,7 +176,7 @@ export function HowCinema() {
     <section
       id="how"
       ref={sectionRef}
-      className="relative py-16 md:py-20"
+      className="relative pt-24 pb-12 md:py-20"
       style={{ background: "var(--paper)" }}
     >
       <div className="mx-auto max-w-[1340px] px-6 lg:px-10">
@@ -188,8 +188,8 @@ export function HowCinema() {
             <h2
               className="display mt-5"
               style={{
-                fontSize: "clamp(32px, 4.4vw, 64px)",
-                lineHeight: 0.96,
+                fontSize: "clamp(25px, 4.4vw, 64px)",
+                lineHeight: 0.98,
                 maxWidth: "15ch",
               }}
             >
@@ -212,7 +212,7 @@ export function HowCinema() {
         {/* Stage — asymmetric: copy holds the left, the tent commands the right.
             Top-aligned so the big number and the tent share a grid line, with
             deliberate negative space beneath the copy. */}
-        <div className="mt-10 lg:mt-12 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        <div className="mt-6 lg:mt-12 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-center">
           {/* Left — step copy + the step navigation, stacked so copy, nav,
               and tent all fit in one viewport. */}
           <div className="lg:col-span-4">
@@ -220,7 +220,7 @@ export function HowCinema() {
               <span
                 className="display block"
                 style={{
-                  fontSize: "clamp(56px, 7vw, 104px)",
+                  fontSize: "clamp(42px, 7vw, 104px)",
                   color: "var(--coral)",
                   lineHeight: 0.82,
                 }}
@@ -246,7 +246,7 @@ export function HowCinema() {
 
             {/* Step navigation — designed timeline: progress track, then four
                 steps each marked by a square node (filled coral when active). */}
-            <div className="mt-8 lg:mt-10">
+            <div className="mt-6 lg:mt-10">
               <div
                 className="relative h-px w-full"
                 style={{ background: "var(--line)" }}
@@ -261,7 +261,7 @@ export function HowCinema() {
                 />
               </div>
 
-              <div className="mt-5 grid grid-cols-4 gap-3">
+              <div className="mt-4 lg:mt-5 grid grid-cols-4 gap-3">
                 {STEPS.map((s, i) => {
                   const on = i === active
                   return (
@@ -270,7 +270,7 @@ export function HowCinema() {
                       type="button"
                       onClick={() => goTo(i)}
                       aria-current={on}
-                      className="group text-left flex flex-col items-start gap-2.5"
+                      className="group text-left flex flex-col items-start gap-1.5 lg:gap-2.5"
                     >
                       <span
                         aria-hidden
@@ -321,10 +321,9 @@ export function HowCinema() {
           <div className="lg:col-span-7 lg:col-start-6">
             <svg
               viewBox="0 0 800 500"
-              className="w-full h-auto"
+              className="w-full h-auto max-h-[180px] md:max-h-[42vh]"
               fill="none"
               stroke="var(--ink)"
-              style={{ maxHeight: "42vh" }}
               aria-hidden
             >
               {/* Ground */}
