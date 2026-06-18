@@ -133,8 +133,8 @@ export default function GeneratorsPage() {
       <Nav solid />
       <main className="paper-bg">
         {/* Split hero — copy left, generator image right */}
-        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pt-32 md:pt-40 pb-16 md:pb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pt-24 md:pt-40 pb-10 md:pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-14 items-center">
             {/* Left — copy */}
             <div className="lg:col-span-6">
               <p className="eyebrow" style={{ color: "var(--coral)" }}>
@@ -167,10 +167,7 @@ export default function GeneratorsPage() {
 
             {/* Right — generator image */}
             <div className="lg:col-span-6">
-              <figure
-                className="photo-frame crop-marks relative w-full"
-                style={{ aspectRatio: "4/3" }}
-              >
+              <figure className="photo-frame crop-marks relative w-full aspect-[16/10] md:aspect-[4/3]">
                 <Image
                   src="/photos/wix/generator-power.png"
                   alt="Event power generators staged for a Maui build"
@@ -186,13 +183,13 @@ export default function GeneratorsPage() {
         </section>
 
         {/* Cards */}
-        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pb-20">
-          <p className="label mb-8">What we power</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pb-12 md:pb-20">
+          <p className="label mb-5 lg:mb-8">What we power</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
             {CARDS.map((c, i) => {
               const Icon = c.Icon
               return (
-                <div key={c.title} className="frame-card p-7 md:p-8">
+                <div key={c.title} className="frame-card p-5 md:p-8">
                   <div className="flex items-center justify-between">
                     <Icon />
                     <p className="label" style={{ color: "var(--coral)" }}>
@@ -200,14 +197,14 @@ export default function GeneratorsPage() {
                     </p>
                   </div>
                   <h2
-                    className="display mt-5"
-                    style={{ fontSize: "clamp(22px, 2.4vw, 30px)" }}
+                    className="display mt-4 md:mt-5"
+                    style={{ fontSize: "clamp(19px, 2.4vw, 30px)" }}
                   >
                     {c.title}
                   </h2>
                   <p
-                    className="body mt-3"
-                    style={{ color: "var(--ink-soft)", fontSize: "1rem" }}
+                    className="mt-2 md:mt-3 text-sm leading-snug md:text-base md:leading-[1.7]"
+                    style={{ color: "var(--ink-soft)" }}
                   >
                     {c.body}
                   </p>
@@ -218,7 +215,7 @@ export default function GeneratorsPage() {
         </section>
 
         {/* CTA */}
-        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pb-28">
+        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pb-20 md:pb-28">
           <div className="frame-card p-7 md:p-12 lg:p-16">
             <h2
               className="font-display-light tight"

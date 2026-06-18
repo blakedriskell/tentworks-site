@@ -3,7 +3,7 @@
 // Conversational multi-step build planner. Two-column configurator: the left
 // rail holds the hero copy, progress, and a tent that builds itself stage by
 // stage as you advance; the right column holds the active question / form.
-// Submit posts to the local /api/quote route handler.
+// Submit posts to Formspree (recipient configured in the Formspree dashboard).
 
 import { useEffect, useState, useTransition } from "react"
 
@@ -164,6 +164,140 @@ const ICON_BY_KEY: Record<string, () => React.JSX.Element> = {
   event_date: DateIcon,
 }
 
+// Small filled dots — used to express crowd density on the guest-count answers.
+const dots = (coords: [number, number][], r = 1.3) =>
+  coords.map(([cx, cy], i) => (
+    <circle key={i} cx={cx} cy={cy} r={r} fill="currentColor" stroke="none" />
+  ))
+
+/* Per-answer icons — each option gets its own glyph so the icons help the user
+ * read the choices (not the same mark repeated). Falls back to the question's
+ * icon if a value isn't mapped. Same thin-line blueprint vocabulary. */
+const ICON_BY_VALUE: Record<string, () => React.JSX.Element> = {
+  // Q01 — event type
+  wedding: () => (
+    <IconFrame>
+      <circle cx="9" cy="13" r="5" />
+      <circle cx="15" cy="13" r="5" />
+    </IconFrame>
+  ),
+  luau: () => (
+    <IconFrame>
+      <path d="M5 12 C5 7 9 4 14 4 C14 9 10 12 5 12 Z" />
+      <path d="M5 12 Q9 9 13 6" />
+    </IconFrame>
+  ),
+  corporate: () => (
+    <IconFrame>
+      <rect x="6" y="4" width="12" height="16" rx="0.5" />
+      <path d="M9 9 h2 M13 9 h2 M9 13 h2 M13 13 h2" />
+    </IconFrame>
+  ),
+  festival: () => (
+    <IconFrame>
+      <path d="M7 21 V4" />
+      <path d="M7 5 H17 L14 8 L17 11 H7" />
+    </IconFrame>
+  ),
+  backyard: () => (
+    <IconFrame>
+      <path d="M4 11 L12 4 L20 11" />
+      <path d="M6 10 V20 H18 V10" />
+      <path d="M10 20 V15 H14 V20" />
+    </IconFrame>
+  ),
+  other: () => (
+    <IconFrame>
+      <path d="M12 5 V19 M5 12 H19" />
+    </IconFrame>
+  ),
+
+  // Q02 — guest count (density grows with the number)
+  "under-50": () => <IconFrame>{dots([[9, 12], [15, 12]])}</IconFrame>,
+  "50-120": () => <IconFrame>{dots([[7, 12], [12, 12], [17, 12]])}</IconFrame>,
+  "120-250": () => <IconFrame>{dots([[9, 9], [15, 9], [9, 15], [15, 15]])}</IconFrame>,
+  "250-450": () => (
+    <IconFrame>{dots([[7, 9], [12, 9], [17, 9], [7, 15], [12, 15], [17, 15]])}</IconFrame>
+  ),
+  "450+": () => (
+    <IconFrame>
+      {dots(
+        [[7, 8], [12, 8], [17, 8], [7, 13], [12, 13], [17, 13], [7, 18], [12, 18], [17, 18]],
+        1.15
+      )}
+    </IconFrame>
+  ),
+
+  // Q03 — tent style
+  sailcloth: () => (
+    <IconFrame>
+      <path d="M3 18 L8 9 L12 13 L16 9 L21 18" />
+      <path d="M3 18 H21" opacity="0.5" />
+    </IconFrame>
+  ),
+  clearspan: () => (
+    <IconFrame>
+      <path d="M4 18 V11 Q12 4 20 11 V18" />
+      <path d="M3 18 H21" opacity="0.5" />
+    </IconFrame>
+  ),
+  frame: () => (
+    <IconFrame>
+      <path d="M4 18 V10 L12 7 L20 10 V18" />
+      <path d="M3 18 H21" opacity="0.5" />
+    </IconFrame>
+  ),
+  pole: () => (
+    <IconFrame>
+      <path d="M4 18 L12 4 L20 18" />
+      <path d="M12 4 V18" opacity="0.6" />
+      <path d="M3 18 H21" opacity="0.5" />
+    </IconFrame>
+  ),
+  unsure: () => (
+    <IconFrame>
+      <path d="M9.4 9.5 a2.6 2.6 0 1 1 3.4 2.5 c-1 0.4 -1.4 1 -1.4 2" />
+      <circle cx="11.4" cy="18" r="0.7" fill="currentColor" stroke="none" />
+    </IconFrame>
+  ),
+
+  // Q04 — ground / surface
+  grass: () => (
+    <IconFrame>
+      <path d="M3 18 H21" opacity="0.5" />
+      <path d="M7 18 C7 14 8 13 8 11" />
+      <path d="M12 18 C12 14 11 13 11 11" />
+      <path d="M16 18 C16 14 17 13 17 11" />
+    </IconFrame>
+  ),
+  sand: () => (
+    <IconFrame>
+      <path d="M3 15 Q8 12 13 15 T21 14" />
+      {dots([[7, 19], [12, 19.5], [17, 19]], 0.7)}
+    </IconFrame>
+  ),
+  concrete: () => (
+    <IconFrame>
+      <rect x="4" y="8" width="16" height="10" />
+      <path d="M4 13 H20 M9.3 8 V18 M14.6 8 V18" />
+    </IconFrame>
+  ),
+  mixed: () => (
+    <IconFrame>
+      <path d="M3 18 H21" opacity="0.5" />
+      <path d="M7 18 C7 14 8 13 8 11" />
+      <rect x="12" y="11" width="7" height="6" />
+      <path d="M15.5 11 V17 M12 14 H19" />
+    </IconFrame>
+  ),
+  tbd: () => (
+    <IconFrame>
+      <circle cx="10.5" cy="10.5" r="5" />
+      <path d="M14.5 14.5 L19 19" />
+    </IconFrame>
+  ),
+}
+
 // Tent that draws itself in stages, tied to the current step (0–5).
 function TentBuild({ step, reduced }: { step: number; reduced: boolean }) {
   const draw = (stage: number, extra?: React.CSSProperties): React.CSSProperties => ({
@@ -262,28 +396,36 @@ export function BuildWizard({
     setError(null)
     const fd = new FormData(e.currentTarget)
     const payload = {
+      _subject: "New build request — Tentworks build planner",
       name: String(fd.get("name") || ""),
       email: String(fd.get("email") || ""),
-      phone: String(fd.get("phone") || "") || null,
-      event_type: answers.event_type || null,
-      event_date: answers.event_date || null,
-      guest_count: answers.guest_count || null,
-      venue_location: String(fd.get("location") || "") || null,
-      tent_style: answers.tent_style || null,
-      surface_type: answers.surface_type || null,
-      message: String(fd.get("message") || "") || null,
-      source: `build-wizard:${JSON.stringify(answers)}`,
+      phone: String(fd.get("phone") || ""),
+      "event type": answers.event_type || "",
+      "guest count": answers.guest_count || "",
+      "tent style": answers.tent_style || "",
+      "ground / surface": answers.surface_type || "",
+      "when": answers.event_date || "",
+      "where on the island": String(fd.get("location") || ""),
+      message: String(fd.get("message") || ""),
     }
     startTransition(async () => {
       try {
-        const res = await fetch("/api/quote", {
+        const res = await fetch("https://formspree.io/f/xbdeevdg", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
           body: JSON.stringify(payload),
         })
-        const data = await res.json().catch(() => ({}))
-        if (res.ok && data.ok) setSubmitted(true)
-        else setError(data.error || "Something went wrong. Call the workshop and we'll sort it.")
+        if (res.ok) setSubmitted(true)
+        else {
+          const data = await res.json().catch(() => ({}))
+          setError(
+            data?.errors?.[0]?.message ||
+              "Something went wrong. Call the workshop and we'll sort it."
+          )
+        }
       } catch {
         setError("Network hiccup. Call the workshop at (808) 444-4407 and we'll sort it.")
       }
@@ -321,7 +463,7 @@ export function BuildWizard({
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-16 items-start">
       {/* LEFT RAIL — hero, progress, building tent. Sticky on desktop. */}
       <aside className="lg:col-span-5 lg:sticky lg:top-28">
         <p className="eyebrow" style={{ color: "var(--coral)" }}>
@@ -329,16 +471,19 @@ export function BuildWizard({
         </p>
         <h1
           className="font-display-light tight mt-4"
-          style={{ fontSize: "clamp(32px, 4vw, 56px)", maxWidth: "14ch" }}
+          style={{ fontSize: "clamp(27px, 4vw, 56px)", maxWidth: "14ch" }}
         >
           {title}
         </h1>
-        <p className="body mt-5" style={{ color: "var(--ink-soft)", maxWidth: "40ch" }}>
+        <p
+          className="mt-4 text-[15px] leading-snug md:text-lg md:leading-[1.7]"
+          style={{ color: "var(--ink-soft)", maxWidth: "40ch" }}
+        >
           {intro}
         </p>
 
         {/* Progress */}
-        <div className="mt-8">
+        <div className="mt-6 lg:mt-8">
           <div className="flex items-center justify-between">
             <span className="mono-label">
               {isLast ? "Last step" : `Question ${String(step + 1).padStart(2, "0")}`}
@@ -368,23 +513,23 @@ export function BuildWizard({
           </p>
         </div>
 
-        <p className="mono-label mt-6" style={{ opacity: 0.5 }}>
+        <p className="mono-label mt-4 lg:mt-6" style={{ opacity: 0.5 }}>
           {note}
         </p>
       </aside>
 
       {/* RIGHT — active question / final form */}
       <div className="lg:col-span-7">
-        <div className="frame-card p-7 md:p-9 lg:p-10">
+        <div className="frame-card p-5 md:p-9 lg:p-10">
           {stepData && (
-            <div key={step} className="flex flex-col gap-8">
+            <div key={step} className="flex flex-col gap-6 md:gap-8">
               <div>
                 <p className="mono-label" style={{ color: "var(--coral)" }}>
                   Question {String(step + 1).padStart(2, "0")}
                 </p>
                 <h2
                   className="mt-3 font-display-light tight text-balance"
-                  style={{ fontSize: "clamp(28px, 3.4vw, 44px)" }}
+                  style={{ fontSize: "clamp(23px, 3.4vw, 44px)" }}
                 >
                   {stepData.prompt}
                 </h2>
@@ -405,13 +550,14 @@ export function BuildWizard({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {stepData.choices.map((c) => {
                     const active = answers[stepData.key] === c.value
+                    const OptIcon = ICON_BY_VALUE[c.value] ?? StepIcon
                     return (
                       <button
                         key={c.value}
                         type="button"
                         onClick={() => choose(stepData.key, c.value)}
                         aria-pressed={active}
-                        className={`group flex items-center gap-4 text-left p-5 cursor-pointer border transition-all duration-200 hover:-translate-y-0.5 ${
+                        className={`group flex items-center gap-3 md:gap-4 text-left p-4 md:p-5 cursor-pointer border transition-all duration-200 hover:-translate-y-0.5 ${
                           active
                             ? "border-[color:var(--coral)] bg-[rgba(216,90,60,0.08)]"
                             : "border-[color:var(--line)] hover:border-[color:var(--coral)] hover:bg-[rgba(216,90,60,0.04)]"
@@ -421,7 +567,7 @@ export function BuildWizard({
                           className="shrink-0 transition-colors duration-200"
                           style={{ color: active ? "var(--coral)" : "var(--ink)" }}
                         >
-                          {StepIcon ? <StepIcon /> : null}
+                          {OptIcon ? <OptIcon /> : null}
                         </span>
                         <span className="flex-1 min-w-0">
                           <span className="block font-display tight" style={{ fontSize: 19 }}>

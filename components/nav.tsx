@@ -119,6 +119,33 @@ export function Nav({ solid = false }: { solid?: boolean }) {
 
   const linkColor = overHero ? "#fcf8f0" : "var(--ink-soft)"
 
+  // Mobile hamburger — a bordered control that adapts to the header context
+  // (glassy/light over the dark hero, subtle dark-on-cream once solid).
+  const overDarkHeader = !menuOpen && overHero
+  const burgerBorder = overDarkHeader
+    ? "rgba(252, 248, 240, 0.34)"
+    : "rgba(22, 29, 36, 0.16)"
+  const burgerBg = overDarkHeader
+    ? "rgba(252, 248, 240, 0.06)"
+    : "rgba(250, 246, 238, 0.6)"
+
+  // Calm staggered fade/slide for mobile-menu items as the panel opens.
+  const itemStyle = (i: number): React.CSSProperties =>
+    reduced
+      ? {
+          opacity: menuOpen ? 1 : 0,
+          transition: `opacity 300ms ease ${menuOpen ? 60 + i * 40 : 0}ms`,
+        }
+      : {
+          opacity: menuOpen ? 1 : 0,
+          transform: menuOpen ? "translateY(0)" : "translateY(6px)",
+          transition: `opacity 420ms ease ${
+            menuOpen ? 70 + i * 45 : 0
+          }ms, transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1) ${
+            menuOpen ? 70 + i * 45 : 0
+          }ms`,
+        }
+
   // Larger, proportional logo on desktop; gently shrinks once scrolled.
   const logoHeight = isDesktop ? (scrolled ? 60 : 76) : scrolled ? 44 : 52
 
@@ -267,33 +294,38 @@ export function Nav({ solid = false }: { solid?: boolean }) {
             )}
           </nav>
 
-          {/* Hamburger — mobile only */}
+          {/* Hamburger — mobile only, a bordered control that morphs to an X */}
           <button
             type="button"
-            className="md:hidden inline-flex items-center justify-center w-10 h-10 -mr-2"
+            className="md:hidden relative inline-flex items-center justify-center w-11 h-11 rounded-full border transition-[transform,background-color,border-color] duration-300 active:scale-90"
+            style={{
+              borderColor: burgerBorder,
+              background: burgerBg,
+              backdropFilter: overDarkHeader ? "blur(6px)" : "none",
+            }}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
             onClick={() => setMenuOpen((o) => !o)}
           >
-            <span className="relative block w-6 h-4" aria-hidden>
+            <span className="relative block w-5 h-3.5" aria-hidden>
               <span
-                className="absolute left-0 block h-[2px] w-6 transition-all duration-300"
+                className="absolute left-0 block h-[2px] w-5 rounded-full transition-all duration-300"
                 style={{
                   background: iconColor,
-                  top: menuOpen ? "7px" : "0px",
+                  top: menuOpen ? "6px" : "0px",
                   transform: menuOpen ? "rotate(45deg)" : "none",
                 }}
               />
               <span
-                className="absolute left-0 top-[7px] block h-[2px] w-6 transition-all duration-300"
+                className="absolute left-0 top-[6px] block h-[2px] w-5 rounded-full transition-all duration-300"
                 style={{ background: iconColor, opacity: menuOpen ? 0 : 1 }}
               />
               <span
-                className="absolute left-0 block h-[2px] w-6 transition-all duration-300"
+                className="absolute left-0 block h-[2px] w-5 rounded-full transition-all duration-300"
                 style={{
                   background: iconColor,
-                  top: menuOpen ? "7px" : "14px",
+                  top: menuOpen ? "6px" : "12px",
                   transform: menuOpen ? "rotate(-45deg)" : "none",
                 }}
               />
@@ -302,26 +334,33 @@ export function Nav({ solid = false }: { solid?: boolean }) {
         </div>
       </div>
 
-      {/* Mobile menu panel */}
+      {/* Mobile menu panel — scrolls if the screen is short; no horizontal scroll */}
       <div
         id="mobile-menu"
-        className="md:hidden overflow-hidden transition-[max-height,opacity] duration-400 ease-out"
+        className="md:hidden overflow-y-auto overscroll-contain transition-[max-height,opacity] duration-400 ease-out"
         style={{
           maxHeight: menuOpen ? "80vh" : "0px",
           opacity: menuOpen ? 1 : 0,
         }}
       >
-        <nav className="mx-auto max-w-[1340px] px-6 pt-2 pb-6 flex flex-col">
-          {LINKS.map((l) =>
+        <nav className="mx-auto max-w-[1340px] px-6 pt-3 pb-8 flex flex-col">
+          {/* Coral stamp — a small technical accent opening the panel */}
+          <span
+            className="block h-px w-10 mb-4"
+            style={{ background: "var(--coral)", ...itemStyle(0) }}
+            aria-hidden
+          />
+
+          {LINKS.map((l, i) =>
             "children" in l ? (
-              <div key={l.label}>
+              <div key={l.label} style={itemStyle(i + 1)}>
                 <button
                   type="button"
-                  className="font-display w-full py-3 border-b flex items-center justify-between"
+                  className="font-display w-full py-4 border-b flex items-center justify-between transition-colors"
                   style={{
-                    color: "var(--ink)",
-                    borderColor: "rgba(221, 207, 177, 0.55)",
-                    fontSize: "1.4rem",
+                    color: mobileServicesOpen ? "var(--coral)" : "var(--ink)",
+                    borderColor: "rgba(221, 207, 177, 0.5)",
+                    fontSize: "1.45rem",
                   }}
                   aria-expanded={mobileServicesOpen}
                   onClick={() => setMobileServicesOpen((o) => !o)}
@@ -350,25 +389,27 @@ export function Nav({ solid = false }: { solid?: boolean }) {
                 <div
                   className="overflow-hidden transition-[max-height,opacity] duration-300 ease-out"
                   style={{
-                    maxHeight: mobileServicesOpen ? "240px" : "0px",
+                    maxHeight: mobileServicesOpen ? "260px" : "0px",
                     opacity: mobileServicesOpen ? 1 : 0,
                   }}
                 >
-                  {l.children.map((c) => (
-                    <a
-                      key={c.href}
-                      href={c.href}
-                      onClick={() => setMenuOpen(false)}
-                      className="font-display block py-2.5 pl-4 border-b transition-colors"
-                      style={{
-                        color: "var(--ink-soft)",
-                        borderColor: "rgba(221, 207, 177, 0.4)",
-                        fontSize: "1.05rem",
-                      }}
-                    >
-                      {c.label}
-                    </a>
-                  ))}
+                  {/* Sub-links — grouped under a coral rail, larger tap area */}
+                  <div
+                    className="my-2 pl-5 flex flex-col"
+                    style={{ borderLeft: "1px solid rgba(216, 90, 60, 0.4)" }}
+                  >
+                    {l.children.map((c) => (
+                      <a
+                        key={c.href}
+                        href={c.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="font-display block py-3 transition-opacity hover:opacity-70"
+                        style={{ color: "var(--ink-soft)", fontSize: "1.1rem" }}
+                      >
+                        {c.label}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : (
@@ -376,17 +417,34 @@ export function Nav({ solid = false }: { solid?: boolean }) {
                 key={l.href}
                 href={l.href}
                 onClick={() => setMenuOpen(false)}
-                className="font-display py-3 border-b transition-colors"
+                className="font-display py-4 border-b transition-opacity hover:opacity-70"
                 style={{
                   color: "var(--ink)",
-                  borderColor: "rgba(221, 207, 177, 0.55)",
-                  fontSize: "1.4rem",
+                  borderColor: "rgba(221, 207, 177, 0.5)",
+                  fontSize: "1.45rem",
+                  ...itemStyle(i + 1),
                 }}
               >
                 {l.label}
               </a>
             )
           )}
+
+          {/* Contact / location row — calm closing line */}
+          <p
+            className="mono-label mt-7"
+            style={{ color: "var(--ink-soft)", ...itemStyle(LINKS.length + 1) }}
+          >
+            Maui, Hawaii ·{" "}
+            <a
+              href="tel:+18084444407"
+              onClick={() => setMenuOpen(false)}
+              className="transition-opacity hover:opacity-70"
+              style={{ color: "var(--coral)" }}
+            >
+              808 · 444 · 4407
+            </a>
+          </p>
         </nav>
       </div>
     </header>

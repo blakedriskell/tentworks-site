@@ -14,7 +14,7 @@ export default function BuildPage() {
     <>
       <Nav solid />
       <main className="paper-bg">
-        <section className="mx-auto max-w-[1180px] px-6 lg:px-10 pt-32 md:pt-36 pb-24">
+        <section className="mx-auto max-w-[1180px] px-6 lg:px-10 pt-24 md:pt-36 pb-24">
           <BuildWizard
             eyebrow="Build a tent"
             title="Tell us what you&rsquo;re holding."

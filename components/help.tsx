@@ -81,8 +81,12 @@ function Faq() {
   )
 }
 
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xbdeevdg"
+
 function HelpForm() {
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [draft, setDraft] = useState({
     name: "",
     contact: "",
@@ -91,12 +95,40 @@ function HelpForm() {
     moment: "",
   })
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // No backend wired — log + show the success state. Joe gets it in the email
-    // route once that's connected.
-    console.log("[v11/help] draft:", draft)
-    setSubmitted(true)
+    setError(null)
+    setSubmitting(true)
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          _subject: "New message — Tentworks contact form",
+          name: draft.name,
+          "email or phone": draft.contact,
+          when: draft.date,
+          where: draft.location,
+          "what they're holding": draft.moment,
+        }),
+      })
+      if (res.ok) {
+        setSubmitted(true)
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setError(
+          data?.errors?.[0]?.message ||
+            "Something went wrong. Please call 808 · 444 · 4407."
+        )
+      }
+    } catch {
+      setError("Network hiccup. Please call 808 · 444 · 4407.")
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -208,10 +240,20 @@ function HelpForm() {
         <p className="label" style={{ opacity: 0.7 }}>
           One reply. No newsletter. A real person writes you back.
         </p>
-        <button type="submit" className="btn btn-coral">
-          Send it →
+        <button
+          type="submit"
+          disabled={submitting}
+          className="btn btn-coral"
+          style={{ opacity: submitting ? 0.7 : 1 }}
+        >
+          {submitting ? "Sending…" : "Send it →"}
         </button>
       </div>
+      {error && (
+        <p className="label" style={{ color: "var(--coral)" }}>
+          {error}
+        </p>
+      )}
     </form>
   )
 }

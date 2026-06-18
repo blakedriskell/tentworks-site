@@ -118,8 +118,8 @@ export default function StagingPage() {
       <Nav solid />
       <main className="paper-bg">
         {/* Split hero — copy left, staging image right */}
-        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pt-32 md:pt-40 pb-16 md:pb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pt-24 md:pt-40 pb-10 md:pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-14 items-center">
             {/* Left — copy */}
             <div className="lg:col-span-6">
               <p className="eyebrow" style={{ color: "var(--coral)" }}>
@@ -152,10 +152,7 @@ export default function StagingPage() {
 
             {/* Right — staging image */}
             <div className="lg:col-span-6">
-              <figure
-                className="photo-frame crop-marks relative w-full"
-                style={{ aspectRatio: "4/3" }}
-              >
+              <figure className="photo-frame crop-marks relative w-full aspect-[16/10] md:aspect-[4/3]">
                 <Image
                   src="/photos/wix/staging-platform.png"
                   alt="Event stage and raised platform set for a Maui gathering"
@@ -171,31 +168,42 @@ export default function StagingPage() {
         </section>
 
         {/* Cards */}
-        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pb-16 md:pb-20">
-          <p className="label mb-8">What we stage</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pb-12 md:pb-20">
+          <p className="label mb-5 lg:mb-8">What we stage</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
             {CARDS.map((c, i) => {
               const Icon = c.Icon
               return (
-                <div key={c.title} className="frame-card p-7 md:p-8">
-                  <div className="flex items-center justify-between">
+                <div
+                  key={c.title}
+                  className="frame-card relative p-4 md:p-8 flex items-start gap-4 md:block"
+                >
+                  {/* Number — top-right on mobile and desktop */}
+                  <p
+                    className="label absolute top-4 right-4 md:top-8 md:right-8"
+                    style={{ color: "var(--coral)" }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </p>
+                  {/* Icon — left column on mobile, top on desktop */}
+                  <span className="shrink-0">
                     <Icon />
-                    <p className="label" style={{ color: "var(--coral)" }}>
-                      {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {/* Text — title + copy */}
+                  <div className="flex-1 min-w-0 pr-6 md:pr-0">
+                    <h2
+                      className="display md:mt-5"
+                      style={{ fontSize: "clamp(19px, 2.4vw, 30px)" }}
+                    >
+                      {c.title}
+                    </h2>
+                    <p
+                      className="mt-1 md:mt-3 text-sm leading-snug md:text-base md:leading-[1.7]"
+                      style={{ color: "var(--ink-soft)" }}
+                    >
+                      {c.body}
                     </p>
                   </div>
-                  <h2
-                    className="display mt-5"
-                    style={{ fontSize: "clamp(22px, 2.4vw, 30px)" }}
-                  >
-                    {c.title}
-                  </h2>
-                  <p
-                    className="body mt-3"
-                    style={{ color: "var(--ink-soft)", fontSize: "1rem" }}
-                  >
-                    {c.body}
-                  </p>
                 </div>
               )
             })}
@@ -203,19 +211,22 @@ export default function StagingPage() {
         </section>
 
         {/* CTA — compact */}
-        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pb-24">
-          <div className="frame-card p-8 md:p-10">
+        <section className="mx-auto max-w-[1100px] px-6 lg:px-10 pb-20 md:pb-24">
+          <div className="frame-card p-6 md:p-10">
             <h2
               className="font-display-light tight"
-              style={{ fontSize: "clamp(26px, 3vw, 40px)", maxWidth: "20ch" }}
+              style={{ fontSize: "clamp(22px, 3vw, 40px)", maxWidth: "20ch" }}
             >
               Plan the stage around the event.
             </h2>
-            <p className="body mt-4 max-w-xl" style={{ color: "var(--ink-soft)" }}>
+            <p
+              className="mt-3 md:mt-4 max-w-xl text-sm leading-snug md:text-base md:leading-[1.7]"
+              style={{ color: "var(--ink-soft)" }}
+            >
               Share the venue, guest flow, and program. We&apos;ll help shape
               the platform, layout, and timing.
             </p>
-            <a href="/build" className="btn btn-coral mt-7">
+            <a href="/build" className="btn btn-coral mt-6 md:mt-7">
               Plan your event
             </a>
           </div>
